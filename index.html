@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Flip on Click</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: url(photo_2024-08-01_23-15-23.jpg) no-repeat center center;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+        }
+        .card-container {
+            perspective: 1000px;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            margin-top: 20px;
+            transform: scale(0.8);
+        }
+        .header-image {
+            width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            width: 98%;
+            box-sizing: border-box;
+        }
+        .card {
+            width: calc(50% - 5px);
+            padding-bottom: calc(50% - 5px);
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+        .card.is-flipped {
+            transform: rotateY(180deg);
+        }
+        .card div {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .front {
+            background: #333;
+        }
+        .back {
+            background: #555;
+            transform: rotateY(180deg);
+        }
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .overlay {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background: rgb(0 0 0 / 88%);
+            z-index: 999;
+        }
+        .choice-container {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            transform: scale(1.8);
+            padding-bottom: 0px;
+            margin-bottom: 300px;
+        }
+        .choice-container img {
+            cursor: pointer;
+            width: 131px;
+            height: auto;
+        }
+        .restart-button {
+            display: none;
+            cursor: pointer;
+            width: 100px;
+            height: auto;
+            margin-top: 20px;
+        }
+        #hiddenVideoContainer {
+            display: none;
+            position: fixed; /* Фиксированное позиционирование */
+            top: 0;
+            left: 0;
+            width: 100vw; /* Полная ширина окна */
+            height: 100vh; /* Полная высота окна */
+            background-color: black; /* Черный фон */
+            z-index: 1001; /* Убедись, что значение выше, чем у других элементов */
+        }
+        #hiddenVideo {
+            width: 100%;
+            height: 80%;
+            object-fit: cover; /* Адаптирует видео к размерам контейнера */
+            margin-top: 100px;
+        }
+        #hiddenVideoLink {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1002;
+            transform: scale(1.0);
+
+}
+        @keyframes giftSlideUp {
+            0% {
+                transform: translateY(100%);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes giftFlyAway {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+        }
+        .gift-image {
+            position: fixed;
+            bottom: -183px;
+            left: -3%;
+            transform: translateX(-50%);
+            width: 20vw;
+            height: auto;
+            z-index: 998;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .gift-image.show {
+            opacity: 1;
+            animation: giftSlideUp 1s forwards;
+        }
+        .gift-image.fly-away {
+            animation: giftFlyAway 1s forwards;
+        }
+        .top-image {
+            width: 100%;
+            height: auto;
+            max-height: 200px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Card Container -->
+    <div class="card-container">
+        <img src="img res/TAP TO SELECT  A PRIZE Comp 2_00042.png" alt="Header Image" class="header-image">
+        <div id="explosion" class="explosion"></div>
+        <div class="container" id="cardContainer">
+            <div class="card" onclick="toggleCard(this)">
+                <div class="front"><img src="img res/win1_00032.png" alt="Front 1"></div>
+                <div class="back"><img src="img res/win2_00062565.png" alt="Back 1"></div>
+            </div>
+            <div class="card" onclick="toggleCard(this)">
+                <div class="front"><img src="img res/win1_00032.png" alt="Front 2"></div>
+                <div class="back"><img src="img res/win2_00062565.png" alt="Back 2"></div>
+            </div>
+            <div class="card" onclick="toggleCard(this)">
+                <div class="front"><img src="img res/win1_00032.png" alt="Front 3"></div>
+                <div class="back"><img src="img res/win1_000655.png" alt="Back 3"></div>
+            </div>
+            <div class="card" onclick="toggleCard(this)">
+                <div class="front"><img src="img res/win1_00032.png" alt="Front 4"></div>
+                <div class="back"><img src="img res/win1_000655.png" alt="Back 4"></div>
+            </div>
+            <div class="card" onclick="toggleCard(this)">
+                <div class="front"><img src="img res/win1_00032.png" alt="Front 5"></div>
+                <div class="back"><img src="img res/win3_00062.png" alt="Back 5"></div>
+            </div>
+            <div class="card" onclick="toggleCard(this)">
+                <div class="front"><img src="img res/win1_00032.png" alt="Front 6"></div>
+                <div class="back"><img src="img res/win2_00062565.png" alt="Back 6"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Choice Container -->
+    <div class="choice-container" id="choiceContainer">
+        <img src="img res/Make a choice_00171.png" width="100" alt="Top Image" class="top-image">
+        <img src="img res/Withdraw_00045438 1.png" alt="Restart Button" class="restart-button" onclick="restartGame()">
+        <img src="img res/risk_00034 1.png" alt="Choice 1" onclick="startGiftAnimation()">
+        <div class="gift-image" id="giftImage">
+            <img src="img res/Bonus_0010445.png" alt="Gift Image">
+        </div>
+    </div>
+
+    <!-- Hidden Video Container -->
+    <div id="hiddenVideoContainer">
+        <video id="hiddenVideo" autoplay muted loop>
+            <source src="img res/5454545.mp4" type="video/mp4">
+        </video>
+        <a id="hiddenVideoLink" href="" target="_blank"></a>
+    </div>
+
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cardContainer = document.querySelector('.card-container');
+            const choiceContainer = document.getElementById('choiceContainer');
+            const hiddenVideoContainer = document.getElementById('hiddenVideoContainer');
+            const hiddenVideoLink = document.getElementById('hiddenVideoLink');
+            const giftImage = document.getElementById('giftImage');
+            const restartButton = document.querySelector('.restart-button');
+            let flippedCards = 0;
+
+            window.toggleCard = function(card) {
+                const isFlipped = card.classList.contains('is-flipped');
+
+                if (flippedCards >= 3 && !isFlipped) {
+                    alert('You can only flip up to 3 cards.');
+                    return;
+                }
+
+                if (isFlipped) {
+                    flippedCards--;
+                } else {
+                    flippedCards++;
+                }
+
+                card.classList.toggle('is-flipped');
+
+                if (flippedCards === 3) {
+                    setTimeout(() => {
+                        showChoiceContainer();
+                        showGift();
+                    }, 1000); // Задержка 2 секунды перед показом контейнера выбора
+                }
+            };
+
+            function showChoiceContainer() {
+                cardContainer.style.display = 'none';
+                choiceContainer.style.display = 'flex';
+                restartButton.style.display = 'block'; // Показываем кнопку рестарта
+            }
+
+            function showGift() {
+                giftImage.classList.add('show');
+            }
+
+            window.startGiftAnimation = function() {
+                giftImage.classList.add('fly-away');
+                setTimeout(() => {
+                    giftImage.classList.remove('show', 'fly-away');
+                    giftImage.style.opacity = 0;
+                    hiddenVideoContainer.style.display = 'flex';
+                    // Убедись, что другие элементы скрыты
+                    document.querySelector('.card-container').style.display = 'none';
+                    document.getElementById('choiceContainer').style.display = 'none';
+                }, 100); // 1000 мс соответствует длительности анимации
+            };
+
+            window.restartGame = function() {
+                flippedCards = 0;
+                const cards = document.querySelectorAll('.card');
+                cards.forEach(card => {
+                    card.classList.remove('is-flipped');
+                });
+                cardContainer.style.display = 'flex';
+                choiceContainer.style.display = 'none';
+                restartButton.style.display = 'none'; // Скрываем кнопку рестарта
+                giftImage.classList.remove('show', 'fly-away'); // Сбрасываем анимации подарка
+                giftImage.style.opacity = 0; // Скрываем изображение подарка
+                shuffleCards(); // Перемешиваем карточки при перезапуске игры
+            };
+
+            function shuffle(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function shuffleCards() {
+                const container = document.getElementById('cardContainer');
+                const cards = Array.from(container.children);
+                const shuffledCards = shuffle(cards);
+
+                container.innerHTML = '';
+                shuffledCards.forEach(card => container.appendChild(card));
+            }
+
+            // Перемешиваем карточки при первой загрузке страницы
+            shuffleCards();
+        });
+    </script>
+</body>
+</html>
